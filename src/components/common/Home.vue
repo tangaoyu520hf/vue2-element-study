@@ -1,10 +1,12 @@
 <template>
     <div class="wrapper">
-        <v-head></v-head>
+       <v-head></v-head>
+      <div class="left-fixed-right-auto">
         <v-sidebar></v-sidebar>
         <div class="content">
-            <transition name="move" mode="out-in"><router-view></router-view></transition>
+          <router-view></router-view>
         </div>
+      </div>
     </div>
 </template>
 

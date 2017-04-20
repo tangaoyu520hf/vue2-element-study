@@ -1,18 +1,31 @@
 <template>
-    <div class="header">
-        <div class="logo">后台管理系统</div>
-        <div class="user-info">
-            <el-dropdown trigger="click" @command="handleCommand">
-                <span class="el-dropdown-link">
-                    <img class="user-logo">
-                    {{username}}
+  <header class="head-nav">
+    <el-row>
+      <el-col :span="4" class='logo-container'>
+        <img src="../../../static/images/tangaoyu.png" class='logo' alt="">
+      </el-col>
+      <el-col :span="4" :push="16">
+                <span class='username'>
+                    <el-dropdown
+                      trigger="click">
+                        <span class="el-dropdown-link">
+                          11111  <i class="el-icon-caret-bottom el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command='info'>修改信息</el-dropdown-item>
+                            <el-dropdown-item
+                              command='pass'
+                             >修改密码</el-dropdown-item>
+                            <el-dropdown-item
+                              command='set'
+                              >系统设置</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="loginout">退出</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div>
-    </div>
+                <i class="fa fa-sign-out logout" @click='logout'></i>
+      </el-col>
+    </el-row>
+  </header>
 </template>
 <script>
     export default {
@@ -33,11 +46,23 @@
                     localStorage.removeItem('ms_username')
                     this.$router.push('/login');
                 }
+            },
+            logout(){
+                alert("退出登录")
             }
         }
     }
 </script>
 <style scoped>
+    .logo-container{
+      height: 60px;
+    }
+    .logo{
+      height: 50px;
+      width: auto;
+      margin-left: 10px;
+      margin-top: 5px;
+    }
     .header {
         position: relative;
         box-sizing: border-box;
@@ -74,7 +99,15 @@
         height:40px;
         border-radius: 50%;
     }
-    .el-dropdown-menu__item{
-        text-align: center;
+    .head-nav{
+      width:100%;
+      height: 60px;
+      background: #324057;
+      position: fixed;
+      top:0px;
+      left:0px;
+      z-index: 999;
+      color:#FFF;
+      border-bottom: 1px solid #1F2D3D;
     }
 </style>
