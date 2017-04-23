@@ -1,24 +1,26 @@
 <template>
   <div  class="sidebar" :style="{'width':'250px'}" id='admin-left'>
-    <el-row v-for="(item, index) in menus" class='tac'>
-      {{item.name}}
-      <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-
+    <el-row v-for="(item, index) in menus" class='tac' :key="index">
+      <el-menu :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+        <el-submenu :index="index+''">
+          <template slot="title">{{item.name}}</template>
+          <el-menu-item v-for="(subitem, subindex) in item.children" :route="{path:subitem.url}" :index="subitem.url" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">{{subitem.name}}</el-menu-item>
+        </el-submenu>
       </el-menu>
     </el-row>
   </div>
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     export default {
         computed:{
-            onRoutes(){
-                return this.$route.path.replace('/','');
-            }
+            ...mapGetters({
+              menus:"getMenus"
+            })
         },
         data () {
           return {
-            menus:this.$store.state.menu.routes,
           }
         },
         methods:{

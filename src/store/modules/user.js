@@ -26,8 +26,13 @@ const module = {
       localStorage.set("userinfo",state.userinfo);
     },
     setUserInfo(state,userInfo){
-      state.userinfo = {...state.userinfo,userInfo}
+      state.userinfo = userInfo
       localStorage.set("userinfo",state.userinfo);
+    }
+  },
+  getters: {
+    getMenus: state => {
+      return state.userinfo.menu||{}
     }
   }
 

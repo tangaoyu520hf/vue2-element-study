@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueResource)
 Vue.http.options.root = 'http://localhost:8080';
-Vue.http.options.emulateJSON = true;
+//Vue.http.options.emulateJSON = true;
 //添加请求前的 header中的 token值以及请求后的 错误处理
 Vue.http.interceptors.push((request, next)  => {
   let userinfo = store.state.user.userinfo;
@@ -23,6 +23,25 @@ Vue.http.interceptors.push((request, next)  => {
   next((response) => {
   });
 });
+
+router.beforeEach((to, from, next) => {
+  if (!to.matched.some(record => record.meta.notRequire)) {
+    // check if logged in
+    // if not, redirect to login page.
+    let userinfo = store.state.user.userinfo;
+    if (!userinfo) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // 确保一定要调用 next()
+  }
+})
+
 
 /* eslint-disable no-new */
 new Vue({

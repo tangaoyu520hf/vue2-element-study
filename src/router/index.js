@@ -1,26 +1,26 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "../components/common/Home.vue";
 import Menu from "../components/modules/Menu/Menu.vue"
-import Login from "../components/modules/Login/Login.vue"
-Vue.use(Router)
+import util from "../util"
 
+Vue.use(Router)
 export default new Router({
   routes: [
     {
       path: '/login',
       name:"login",
-      component: Login,
+      component: util.load("components/modules/Login","Login"),
+      meta: { notRequire: true }
     },
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: util.load("components/common","Home"),
       children:[{
-          path:'menu',
+          path:'/menu',
           name:"菜单管理",
           component:Menu,
       }]
-    }
+    },
   ]
 })

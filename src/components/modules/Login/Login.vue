@@ -12,15 +12,15 @@
                    ref='data'>
             <h3 class="title">系统登录</h3>
             <el-form-item
-              prop='userName'>
+              prop='username'>
               <el-input type="text" auto-complete="off" placeholder="账号"
-                        v-model='data.userName'
+                        v-model='data.username'
                         @keyup.native.enter="login('data')"></el-input>
             </el-form-item>
             <el-form-item
-              prop='passWord'>
-              <el-input type="passWord" auto-complete="off" placeholder="密码"
-                        v-model='data.passWord'
+              prop='password'>
+              <el-input type="password" auto-complete="off" placeholder="密码"
+                        v-model='data.password'
                         @keyup.native.enter="login('data')"></el-input>
             </el-form-item>
 <!--            <el-checkbox style="margin:0px 0px 35px 0px;"
@@ -39,8 +39,34 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex'
+  import { mapMutations } from 'vuex';
+  import util from "@/util"
+  let routesTemp = [];
+  // 设置菜单树
+  function getRoutes(data) {
+    data.forEach((currentValue,index) => {
+      if(currentValue&& currentValue.children.length<1){
+        let route = {
+          path: currentValue.url,
+          component: util.load("components/modules/Login","Login"),
+        };
+        routesTemp.push(route);
+      }else{
+        getRoutes(currentValue.children);
+      }
+    });
+    return routesTemp;
+  }
+
+
   export default {
+    computed:{
+      routes(){
+        const menus = this.$store.getters.getMenus;
+        let routes2 = getRoutes(menus);
+        return routes2;
+      }
+    },
     name: 'login',
     data() {
       return {
@@ -62,17 +88,17 @@
         },
 
         data: {
-          userName: '',
-          passWord: ''
+          username: '',
+          password: ''
         },
 
         rule_data: {
-          userName: [{
+          username: [{
             required: true,
             message: '用户名不能为空！',
             trigger: 'blur'
           }],
-          passWord: [{
+          password: [{
             required: true,
             message: '密码不能为空！',
             trigger: 'blur'
@@ -82,7 +108,7 @@
     },
     methods: {
       ...mapMutations([
-        'setToken' // 映射 this.increment() 为 this.$store.commit('increment')
+        'setUserInfo'
       ]),
       setSize() {
         this.winSize.width = $(window).width() + "px";
@@ -96,13 +122,15 @@
         this.$refs[ref].validate((valid) => {
           if (valid) {
             this.login_actions.disabled = true;
-            //如果记住密码，提交的信息包括真实token，密码则是假的
-            //服务端登录验证优先级：用户名必须，其次先取token，不存在时再取密码
-            this.$http.post('security/user/login', this[ref]).then(response => {
+            this.$http.post('api/authenticate', this[ref]).then(response => {
               // get body data
-              let token = response.body.data;
-              this.setToken(token);
+              //let token = response.body.data;
+              this.setUserInfo(response.body);
               this.login_actions.disabled = false;
+              this.$router.push({name:"home"});
+              const menus = this.$store.getters.getMenus;
+              let routes2 = getRoutes(menus);
+              this.$router.addRoutes(routes2);
             },response => {
               this.login_actions.disabled = false;
             });
@@ -124,7 +152,7 @@
       //如果上次登录选择的是记住密码并登录成功，则会保存状态，用户名以及token
       if (this.remumber.remumber_flag === true) {
         this.data.username = this.remumber.remumber_login_info.username;
-        this.data.passWord = this.remumber.remumber_login_info.token.substring(0, 16);
+        this.data.password = this.remumber.remumber_login_info.token.substring(0, 16);
       }
     }
   }
