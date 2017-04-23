@@ -40,25 +40,6 @@
 
 <script>
   import { mapMutations } from 'vuex';
-  import util from "@/util"
-  let routesTemp = [];
-  // 设置菜单树
-  function getRoutes(data) {
-    data.forEach((currentValue,index) => {
-      if(currentValue&& currentValue.children.length<1){
-        let route = {
-          path: currentValue.url,
-          component: util.load("components/modules/Login","Login"),
-        };
-        routesTemp.push(route);
-      }else{
-        getRoutes(currentValue.children);
-      }
-    });
-    return routesTemp;
-  }
-
-
   export default {
     computed:{
       routes(){

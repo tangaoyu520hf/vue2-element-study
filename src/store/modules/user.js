@@ -4,7 +4,7 @@
 import {
   localStorage
 } from '@/util/store/store.js'
-
+import util from "@/util"
 const module = {
   state:{
     //登录成功后的用户信息
@@ -28,13 +28,39 @@ const module = {
     setUserInfo(state,userInfo){
       state.userinfo = userInfo
       localStorage.set("userinfo",state.userinfo);
+    },
+    logout(state){
+      this.setUserInfo(state,state.userinfo);
     }
   },
   getters: {
     getMenus: state => {
       return state.userinfo.menu||{}
-    }
-  }
-
+    },
+    getRoutes: state => {
+      return getRoutes(state.userinfo.menu);
+    },
+  },
 }
+
+/**
+ * 只获取最下一级菜单 到路由中
+ * @param data
+ * @returns {*}
+ */
+function getRoutes(menus = [], routes = []) {
+  menus.forEach((currentValue,index) => {
+    if(currentValue&& currentValue.children.length<1){
+      let route = {
+        path: currentValue.url,
+        component: util.load("components/modules/Login","Login"),
+      };
+      routes.push(route);
+    }else{
+      getRoutes(currentValue.children,routes);
+    }
+  });
+  return routes;
+}
+
 export default module

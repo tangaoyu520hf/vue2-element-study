@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
+import routerFunction from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import store from './store/index'
@@ -23,6 +23,9 @@ Vue.http.interceptors.push((request, next)  => {
   next((response) => {
   });
 });
+
+let router = routerFunction(store);
+
 
 router.beforeEach((to, from, next) => {
   if (!to.matched.some(record => record.meta.notRequire)) {

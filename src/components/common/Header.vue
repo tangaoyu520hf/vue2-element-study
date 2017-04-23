@@ -9,7 +9,7 @@
                     <el-dropdown
                       trigger="click">
                         <span class="el-dropdown-link">
-                          11111  <i class="el-icon-caret-bottom el-icon--right"></i>
+                          {{username}}  <i class="el-icon-caret-bottom el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command='info'>修改信息</el-dropdown-item>
@@ -22,21 +22,16 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                 </span>
-                <i class="fa fa-sign-out logout" @click='logout'></i>
+                <i class="fa fa-sign-out logout" @click='logout'>退出登录</i>
       </el-col>
     </el-row>
   </header>
 </template>
 <script>
     export default {
-        data() {
-            return {
-                name: 'linxin'
-            }
-        },
         computed:{
             username(){
-                let username = localStorage.getItem('ms_username');
+                let username = this.$store.state.user.userinfo.token;
                 return username ? username : this.name;
             }
         },
@@ -48,7 +43,7 @@
                 }
             },
             logout(){
-                alert("退出登录")
+                this.$store.commit("setUserInfo",{})
             }
         }
     }
