@@ -19,7 +19,7 @@ export default store => {
     }]
   };
   route.children = [...route.children,...store.getters.getRoutes]
-  return new Router({
+  const router = new Router({
     routes: [
       {
         path: '/login',
@@ -29,5 +29,24 @@ export default store => {
       },
       ...[route],
     ]
+  });
+
+  router.beforeEach((to, from, next) => {
+    if (!to.matched.some(record => record.meta.notRequire)) {
+      // check if logged in
+      // if not, redirect to login page.
+      let userinfo = store.state.user.userinfo;
+      if (!userinfo) {
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })
+      } else {
+        next()
+      }
+    } else {
+      next() // 确保一定要调用 next()
+    }
   })
+  return router;
 }
