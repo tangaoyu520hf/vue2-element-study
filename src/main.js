@@ -23,33 +23,10 @@ Vue.http.interceptors.push((request, next)  => {
   next((response) => {
   });
 });
-
-let router = routerFunction(store);
-
-
-router.beforeEach((to, from, next) => {
-  if (!to.matched.some(record => record.meta.notRequire)) {
-    // check if logged in
-    // if not, redirect to login page.
-    let userinfo = store.state.user.userinfo;
-    if (!userinfo) {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
-    } else {
-      next()
-    }
-  } else {
-    next() // 确保一定要调用 next()
-  }
-})
-
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router:routerFunction(store),
   store,
   template: '<App/>',
   components: { App }
