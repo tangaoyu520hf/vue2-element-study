@@ -4,7 +4,12 @@
       <el-col :span="4" class='logo-container'>
         <img src="../../../static/images/tangaoyu.png" class='logo' alt="">
       </el-col>
-      <el-col :span="4" :push="16">
+      <el-col :span="16">
+        <el-menu :default-active="$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened  mode="horizontal">
+          <el-menu-item v-for="(item, index) in menus" :index="item.applicationCode"  @click="initMenuList(item.applicationCode)" :key="index" >{{item.menuName}}</el-menu-item>
+        </el-menu>
+      </el-col>
+      <el-col :span="4">
                 <span class='username'>
                     <el-dropdown
                       trigger="click">
@@ -28,10 +33,14 @@
   </header>
 </template>
 <script>
+    import { mapGetters,mapMutations } from 'vuex'
     export default {
         computed:{
+            ...mapGetters({
+              menus:"getTopMenus"
+            }),
             username(){
-                let username = this.$store.state.user.userinfo.token;
+                let username = this.$store.state.user.userinfo.name;
                 return username ? username : this.name;
             }
         },
@@ -42,8 +51,11 @@
                     this.$router.push('/login');
                 }
             },
+            ...mapMutations([
+              'initMenuList',
+            ]),
             logout(){
-                this.$store.commit("setUserInfo",{})
+                this.$store.commit("logout",{})
             }
         }
     }

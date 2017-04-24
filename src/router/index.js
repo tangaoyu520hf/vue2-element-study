@@ -5,18 +5,12 @@ import util from "../util"
 import user from '../store/modules/user'
 Vue.use(Router)
 
-let func = user.getters.getRoutes;
-
 export default store => {
   const route=  {
     path: '/',
     name: 'home',
     component: util.load("components/common","Home"),
-    children:[{
-      path:'/menu',
-      name:"菜单管理",
-      component:Menu,
-    }]
+    children:[]
   };
   route.children = [...route.children,...store.getters.getRoutes]
   const router = new Router({

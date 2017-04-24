@@ -9,7 +9,7 @@ const module = {
   state:{
     //登录成功后的用户信息
     userinfo: localStorage.get('userinfo') || {},
-
+    menuListByApplicaion:[],
     //记住密码相关信息，现在暂且只做记住一个账号密码
     //后期：每次登录成功一次，就缓存到列表中，然后在登录表单，输入时，会出现下拉列表选择之前登录过得用户
     remumber: {
@@ -26,19 +26,31 @@ const module = {
       localStorage.set("userinfo",state.userinfo);
     },
     setUserInfo(state,userInfo){
-      state.userinfo = userInfo
+      state.userinfo = {...state.userinfo,...userInfo};
       localStorage.set("userinfo",state.userinfo);
     },
     logout(state){
-      this.setUserInfo(state,state.userinfo);
+      state.userinfo = {}
+      localStorage.set("userinfo",state.userinfo);
+    },
+    initMenuList(state,index){
+      if(state.userinfo.menuList){
+        let menusList = state.userinfo.menuList.filter(obj =>obj.applicationCode===index);
+        state.menuListByApplicaion = menusList[0].children;
+      };
     }
   },
   getters: {
-    getMenus: state => {
-      return state.userinfo.menu||{}
+    getTopMenus: state => {
+      let menus =  state.userinfo.menuList||[];
+      return menus
     },
-    getRoutes: state => {
-      return getRoutes(state.userinfo.menu);
+    getSubMenus: (state,getters) => {
+      let menus =  state.menuListByApplicaion;
+      return menus
+    },
+    getRoutes: (state,getters) => {
+      return getRoutes(getters.getTopMenus);
     },
   },
 }
@@ -52,8 +64,11 @@ function getRoutes(menus = [], routes = []) {
   menus.forEach((currentValue,index) => {
     if(currentValue&& currentValue.children.length<1){
       let route = {
-        path: currentValue.url,
+        path: currentValue.menuUrl,
         component: util.load("components/modules/Login","Login"),
+        meta:{
+          applicationCode:currentValue.applicationCode
+        }
       };
       routes.push(route);
     }else{

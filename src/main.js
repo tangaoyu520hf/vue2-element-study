@@ -13,12 +13,12 @@ Vue.use(ElementUI)
 Vue.use(VueResource)
 
 Vue.http.options.root = 'http://localhost:8080';
-//Vue.http.options.emulateJSON = true;
+Vue.http.options.emulateJSON = true;
 //添加请求前的 header中的 token值以及请求后的 错误处理
 Vue.http.interceptors.push((request, next)  => {
   let userinfo = store.state.user.userinfo;
   if(userinfo&&userinfo.token){
-    request.headers.append("Authorization","Basic "+userinfo.token);
+    request.headers.append("Authorization","Bearer "+userinfo.token);
   }
   // continue to next interceptor
   next((response) => {

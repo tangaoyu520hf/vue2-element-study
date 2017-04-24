@@ -1,10 +1,12 @@
 <template>
   <div  class="sidebar" :style="{'width':'250px'}" id='admin-left'>
     <el-row v-for="(item, index) in menus" class='tac' :key="index">
-      <el-menu :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+      <el-menu v-if="item.applicationCode=$route.meta.applicationCode" :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
         <el-submenu :index="index+''">
-          <template slot="title">{{item.name}}</template>
-          <el-menu-item v-for="(subitem, subindex) in item.children" :route="{path:subitem.url}" :index="subitem.url" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">{{subitem.name}}</el-menu-item>
+          <template slot="title">{{item.menuName}}</template>
+          <el-menu-item v-for="(subitem, subindex) in item.children" :route="{path:subitem.menuUrl}" :index="subitem.menuUrl" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">
+            {{subitem.menuName}}
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-row>
@@ -12,18 +14,24 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters,mapMutations } from 'vuex'
     export default {
+        created(){
+          this.initMenuList(this.$route.meta.applicationCode);
+        },
         computed:{
-            ...mapGetters({
-              menus:"getMenus"
-            })
+          ...mapGetters({
+            menus:"getSubMenus"
+          }),
         },
         data () {
           return {
           }
         },
         methods:{
+          ...mapMutations([
+            'initMenuList',
+          ]),
           handleOpen(key, keyPath) {
             console.log(key, keyPath);
           },

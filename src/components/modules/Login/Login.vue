@@ -41,13 +41,6 @@
 <script>
   import { mapMutations } from 'vuex';
   export default {
-    computed:{
-      routes(){
-        const menus = this.$store.getters.getMenus;
-        let routes2 = getRoutes(menus);
-        return routes2;
-      }
-    },
     name: 'login',
     data() {
       return {
@@ -89,6 +82,7 @@
     },
     methods: {
       ...mapMutations([
+        'setToken',
         'setUserInfo'
       ]),
       setSize() {
@@ -102,19 +96,25 @@
       login(ref) {
         this.$refs[ref].validate((valid) => {
           if (valid) {
+            //失败后回调方法
+            const responseFun = response => {
+              this.login_actions.disabled = false;
+            };
             this.login_actions.disabled = true;
-            this.$http.post('api/authenticate', this[ref]).then(response => {
+            this.$http.post('security/user/login', this[ref]).then(response => {
               // get body data
-              //let token = response.body.data;
-              this.setUserInfo(response.body);
-              this.login_actions.disabled = false;
-              this.$router.push({name:"home"});
-              const menus = this.$store.getters.getMenus;
-              let routes2 = getRoutes(menus);
-              this.$router.addRoutes(routes2);
-            },response => {
-              this.login_actions.disabled = false;
-            });
+              let token = response.body.data;
+              this.setToken(token)
+              this.$http.get("security/user/info").then(response => {
+                let userInfo = response.body.data.user||{};
+                userInfo.menuList = response.body.data.menuList||[];
+                userInfo.roleFunctions = response.body.data.roleFunctionDTOS||{};
+                this.setUserInfo(userInfo);
+                this.login_actions.disabled = false;
+                this.$router.addRoutes(this.$store.getters.getRoutes);
+                this.$router.push({name:"home"});
+              },responseFun);
+            },responseFun);
           }
         });
       },
