@@ -11,6 +11,7 @@ import VueResource from 'vue-resource'
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueResource)
+
 Vue.http.options.root = 'http://localhost:8080';
 //Vue.http.options.emulateJSON = true;
 //添加请求前的 header中的 token值以及请求后的 错误处理
