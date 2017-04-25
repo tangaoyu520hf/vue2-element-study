@@ -7,10 +7,9 @@
  * @param component
  * @returns {function(): *}
  */
-function load (url,component) {//按需加载组件
-  let _router=url||'components';
-  console.info(`../${_router}/${component}.vue`);
-  return () => System.import(`../${_router}/${component}.vue`)
+function load (component) {//按需加载组件
+  console.info(`../${component}.vue`);
+  return () => System.import(`../${component}.vue`)
 }
 
 const util = {};

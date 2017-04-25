@@ -5,13 +5,16 @@
         <img src="../../../static/images/tangaoyu.png" class='logo' alt="">
       </el-col>
       <el-col :span="16">
-        <el-menu :default-active="$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
+<!--        <el-menu :default-active="'/'+$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
                  mode="horizontal" router>
-          <el-menu-item :index="'welcome'" @click="initMenuList('welcome')">首页</el-menu-item>
-          <el-menu-item v-for="(item, index) in menus" :index="item.applicationCode" :route="{path:item.applicationCode}"
-                        @click="initMenuList(item.applicationCode)" :key="index">{{item.menuName}}
+          <el-menu-item :index="'/welcome'" @click="initMenuList('/welcome')">首页</el-menu-item>
+          <el-menu-item v-for="(item, index) in menus" :index="item.menuCode" :route="{path:item.menuCode}"
+                        @click="initMenuList(item.menuCode)" :key="index">{{item.menuName}}
           </el-menu-item>
-        </el-menu>
+
+        </el-menu>-->
+        <button @click="pushUrl('/welcome')">welcome</button>
+        <button  @click="pushUrl('/admin')">admin</button>
       </el-col>
       <el-col :span="4">
                 <span class='username'>
@@ -49,11 +52,9 @@
       }
     },
     methods: {
-      handleCommand(command) {
-        if (command == 'loginout') {
-          localStorage.removeItem('ms_username')
-          this.$router.push('/login');
-        }
+      pushUrl(command) {
+        this.initMenuList(command)
+        this.$router.push(command);
       },
       ...mapMutations([
         'initMenuList',

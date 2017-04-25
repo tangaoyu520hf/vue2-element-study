@@ -1,10 +1,11 @@
 <template>
   <div  class="sidebar" :style="{'width':'250px'}" id='admin-left'>
+    {{$route.matched[0].path}}
     <el-row v-for="(item, index) in menus" class='tac' :key="index">
       <el-menu @open="handleOpen" :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
         <el-submenu v-if="item.children&&item.children.length>0" :index="index+''">
           <template slot="title">{{item.menuName}}</template>
-          <el-menu-item v-for="(subitem, subindex) in item.children" :route="{path:subitem.menuUrl}" :index="subitem.menuUrl" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">
+          <el-menu-item v-for="(subitem, subindex) in item.children" :index="'/'+item.applicationCode+'/'+item.menuCode+'/'+subitem.menuCode" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">
             {{subitem.menuName}}
           </el-menu-item>
         </el-submenu>
@@ -18,7 +19,7 @@
     import { mapGetters,mapMutations } from 'vuex'
     export default {
         created(){
-          this.initMenuList(this.$route.meta.applicationCode);
+          this.initMenuList('/'+this.$route.meta.applicationCode);
         },
         computed:{
           ...mapGetters({

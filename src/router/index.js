@@ -1,44 +1,84 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Menu from "../components/modules/Menu/Menu.vue"
-import util from "../util"
-import user from '../store/modules/user'
+import util from "../util";
 Vue.use(Router)
 
 export default store => {
-  const route=  {
+  const route = {
     path: '/',
-    component: util.load("components/common","Home"),
-    children:[{
+    component: util.load("components/common/Home"),
+    children: [{
       hidden: true,
       path: '',
       redirect: to => {
         return 'welcome'
       },
-      path: 'admin',
-      redirect: to => {
-        return 'application'
-      },
-    },{
-      path:'/welcome',
-      name:"welcome",
-      component: util.load("components/common","Welcome"),
-      meta:{
-        applicationCode:"welcome"
+    }, {
+      path: '/welcome',
+      name: "welcome",
+      component: util.load("components/common/Welcome"),
+      meta: {
+        applicationCode: "welcome"
       }
     }]
   };
-  route.children = [...route.children,...store.getters.getRoutes]
+  let routes = [
+    {
+      path: '/login',
+      name: "login",
+      component: util.load("components/modules/Login/Login"),
+      meta: {notRequire: true}
+    },
+      ...[route],
+      ...store.getters.getRoutes]
   const router = new Router({
-    routes: [
+    routes: routes/*[
       {
         path: '/login',
-        name:"login",
-        component: util.load("components/modules/Login","Login"),
-        meta: { notRequire: true }
+        name: "login",
+        component: util.load("components/modules/Login/Login"),
+        meta: {notRequire: true}
       },
-      ...[route],
-    ]
+      {
+        path: '/test',
+        name: "test",
+        component: util.load("components/common/Context"),
+        meta: {notRequire: true}
+      },*/
+      /*      {
+       path: '',
+       icon: 'inbox',
+       component: util.load("components/common/Home"),
+       children: [{
+       hidden: true,
+       path: '',
+       redirect: to => {
+       return 'appli'
+       }
+       },
+       {
+       path: '',
+       icon: 'inbox',
+       component: util.load("components/common/Context"),
+       children: [{
+       hidden: true,
+       path: '',
+       redirect: to => {
+       return 'appli2'
+       }
+       },{
+       path: '/appli2',
+       icon: 'inbox',
+       component: util.load("components/modules/Login/Login"),
+
+
+       }
+
+       ]
+       }
+       ]
+       }*/
+    /*]*/
   });
 
   router.beforeEach((to, from, next) => {
@@ -49,7 +89,7 @@ export default store => {
       if (!userinfo) {
         next({
           path: '/login',
-          query: { redirect: to.fullPath }
+          query: {redirect: to.fullPath}
         })
       } else {
         next()

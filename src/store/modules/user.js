@@ -35,11 +35,11 @@ const module = {
     },
     initMenuList(state,index){
       let menusList;
-      if("welcome"===index){
-        menusList = [{menuName:"欢迎页",menuUrl:"/welcome"}]
+      if("/welcome"===index){
+        menusList = [{menuName:"欢迎页",menuCode:"/welcome",menuUrl:"/welcome"}]
       }else{
         if(state.userinfo.menuList&&index){
-          menusList = state.userinfo.menuList.filter(obj =>obj.applicationCode===index)[0].children;
+          menusList = state.userinfo.menuList.filter(obj =>obj.menuCode===index)[0].children;
         };
       }
       state.menuListByApplicaion = menusList
@@ -87,20 +87,24 @@ const module = {
  * @param data
  * @returns {*}
  */
-function getRoutes(menus = [], routes = []) {
+function getRoutes(menus) {
+  let routes = [];
   menus.forEach((currentValue,index) => {
-    if(currentValue&& currentValue.children.length<1){
-      let route = {
-        path: currentValue.menuUrl,
-        component: util.load("components/modules","Test"),
-        meta:{
-          applicationCode:currentValue.applicationCode
-        }
-      };
-      routes.push(route);
-    }else{
-      getRoutes(currentValue.children,routes);
+    let route = {
+      path: currentValue.menuCode,
+      component: util.load(currentValue.menuUrl),
+      meta:{
+        applicationCode:currentValue.applicationCode
+      }
+    };
+    if(currentValue.children.length>0){
+      route.children = [{
+        path: '',
+        hidden: true,
+        redirect: to => {return currentValue.children[0].menuCode}
+      },...getRoutes(currentValue.children)]
     }
+    routes.push(route);
   });
   return routes;
 }
