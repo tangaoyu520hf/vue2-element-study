@@ -1,13 +1,14 @@
 <template>
   <div  class="sidebar" :style="{'width':'250px'}" id='admin-left'>
     <el-row v-for="(item, index) in menus" class='tac' :key="index">
-      <el-menu v-if="item.applicationCode=$route.meta.applicationCode" :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-        <el-submenu :index="index+''">
+      <el-menu @open="handleOpen" :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+        <el-submenu v-if="item.children&&item.children.length>0" :index="index+''">
           <template slot="title">{{item.menuName}}</template>
           <el-menu-item v-for="(subitem, subindex) in item.children" :route="{path:subitem.menuUrl}" :index="subitem.menuUrl" :style="{'padding-left':'50px'}" :key="index+'-'+subindex">
             {{subitem.menuName}}
           </el-menu-item>
         </el-submenu>
+        <el-menu-item v-else :index="item.menuUrl">{{item.menuName}}</el-menu-item>
       </el-menu>
     </el-row>
   </div>
@@ -24,10 +25,6 @@
             menus:"getSubMenus"
           }),
         },
-        data () {
-          return {
-          }
-        },
         methods:{
           ...mapMutations([
             'initMenuList',
@@ -38,7 +35,7 @@
           handleClose(key, keyPath) {
             console.log(key, keyPath);
           }
-        }
+        },
     }
 </script>
 

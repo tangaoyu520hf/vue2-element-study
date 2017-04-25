@@ -5,8 +5,12 @@
         <img src="../../../static/images/tangaoyu.png" class='logo' alt="">
       </el-col>
       <el-col :span="16">
-        <el-menu :default-active="$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened  mode="horizontal">
-          <el-menu-item v-for="(item, index) in menus" :index="item.applicationCode"  @click="initMenuList(item.applicationCode)" :key="index" >{{item.menuName}}</el-menu-item>
+        <el-menu :default-active="$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
+                 mode="horizontal" router>
+          <el-menu-item :index="'welcome'" @click="initMenuList('welcome')">首页</el-menu-item>
+          <el-menu-item v-for="(item, index) in menus" :index="item.applicationCode" :route="{path:item.applicationCode}"
+                        @click="initMenuList(item.applicationCode)" :key="index">{{item.menuName}}
+          </el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="4">
@@ -20,101 +24,120 @@
                             <el-dropdown-item command='info'>修改信息</el-dropdown-item>
                             <el-dropdown-item
                               command='pass'
-                             >修改密码</el-dropdown-item>
+                            >修改密码</el-dropdown-item>
                             <el-dropdown-item
                               command='set'
-                              >系统设置</el-dropdown-item>
+                            >系统设置</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </span>
-                <i class="fa fa-sign-out logout" @click='logout'>退出登录</i>
+        <i class="fa fa-sign-out logout" @click='logout'>退出登录</i>
       </el-col>
     </el-row>
   </header>
 </template>
 <script>
-    import { mapGetters,mapMutations } from 'vuex'
-    export default {
-        computed:{
-            ...mapGetters({
-              menus:"getTopMenus"
-            }),
-            username(){
-                let username = this.$store.state.user.userinfo.name;
-                return username ? username : this.name;
-            }
-        },
-        methods:{
-            handleCommand(command) {
-                if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
-                }
-            },
-            ...mapMutations([
-              'initMenuList',
-            ]),
-            logout(){
-                this.$store.commit("logout",{})
-            }
+  import {mapGetters, mapMutations} from 'vuex'
+  export default {
+    computed: {
+      ...mapGetters({
+        menus: "getTopMenus"
+      }),
+      username(){
+        let username = this.$store.state.user.userinfo.name;
+        return username ? username : this.name;
+      }
+    },
+    methods: {
+      handleCommand(command) {
+        if (command == 'loginout') {
+          localStorage.removeItem('ms_username')
+          this.$router.push('/login');
         }
+      },
+      ...mapMutations([
+        'initMenuList',
+      ]),
+      logout(){
+        this.$store.commit("logout", {})
+      },
+      defaultRoute(menuItem){
+        return getChild(menuItem);
+      }
     }
+  }
+
+  function getChild(menuItem) {
+    let route = menuItem.menuUrl;
+    if(menuItem.children&&menuItem.children.length>0){
+      route = getChild(menuItem.children[0]);
+    }
+    return route;
+  }
+
 </script>
 <style scoped>
-    .logo-container{
-      height: 60px;
-    }
-    .logo{
-      height: 50px;
-      width: auto;
-      margin-left: 10px;
-      margin-top: 5px;
-    }
-    .header {
-        position: relative;
-        box-sizing: border-box;
-        width: 100%;
-        height: 70px;
-        font-size: 22px;
-        line-height: 70px;
-        color: #fff;
-    }
-    .header .logo{
-        float: left;
-        width:250px;
-        text-align: center;
-    }
-    .user-info {
-        float: right;
-        padding-right: 50px;
-        font-size: 16px;
-        color: #fff;
-    }
-    .user-info .el-dropdown-link{
-        position: relative;
-        display: inline-block;
-        padding-left: 50px;
-        color: #fff;
-        cursor: pointer;
-        vertical-align: middle;
-    }
-    .user-info .user-logo{
-        position: absolute;
-        left:0;
-        top:15px;
-        width:40px;
-        height:40px;
-        border-radius: 50%;
-    }
-    .head-nav{
-      width:100%;
-      height: 60px;
-      background: #324057;
-      position: fixed;
-      top:0px;
-      left:0px;
-      z-index: 999;
-      color:#FFF;
-      border-bottom: 1px solid #1F2D3D;
-    }
+  .logo-container {
+    height: 60px;
+  }
+
+  .logo {
+    height: 50px;
+    width: auto;
+    margin-left: 10px;
+    margin-top: 5px;
+  }
+
+  .header {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 70px;
+    font-size: 22px;
+    line-height: 70px;
+    color: #fff;
+  }
+
+  .header .logo {
+    float: left;
+    width: 250px;
+    text-align: center;
+  }
+
+  .user-info {
+    float: right;
+    padding-right: 50px;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .user-info .el-dropdown-link {
+    position: relative;
+    display: inline-block;
+    padding-left: 50px;
+    color: #fff;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .user-info .user-logo {
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .head-nav {
+    width: 100%;
+    height: 60px;
+    background: #324057;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+    color: #FFF;
+    border-bottom: 1px solid #1F2D3D;
+  }
 </style>

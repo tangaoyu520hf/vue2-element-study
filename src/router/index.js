@@ -8,9 +8,25 @@ Vue.use(Router)
 export default store => {
   const route=  {
     path: '/',
-    name: 'home',
     component: util.load("components/common","Home"),
-    children:[]
+    children:[{
+      hidden: true,
+      path: '',
+      redirect: to => {
+        return 'welcome'
+      },
+      path: 'admin',
+      redirect: to => {
+        return 'application'
+      },
+    },{
+      path:'/welcome',
+      name:"welcome",
+      component: util.load("components/common","Welcome"),
+      meta:{
+        applicationCode:"welcome"
+      }
+    }]
   };
   route.children = [...route.children,...store.getters.getRoutes]
   const router = new Router({

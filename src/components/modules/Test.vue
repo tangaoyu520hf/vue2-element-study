@@ -1,5 +1,6 @@
 <template>
   <div class="login" :style="winSize">
+    {{$route.path}}
     <el-row>
       <el-col :span='24'>
         <div class="content">

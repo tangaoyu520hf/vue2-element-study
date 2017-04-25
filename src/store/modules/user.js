@@ -34,10 +34,15 @@ const module = {
       localStorage.set("userinfo",state.userinfo);
     },
     initMenuList(state,index){
-      if(state.userinfo.menuList){
-        let menusList = state.userinfo.menuList.filter(obj =>obj.applicationCode===index);
-        state.menuListByApplicaion = menusList[0].children;
-      };
+      let menusList;
+      if("welcome"===index){
+        menusList = [{menuName:"欢迎页",menuUrl:"/welcome"}]
+      }else{
+        if(state.userinfo.menuList&&index){
+          menusList = state.userinfo.menuList.filter(obj =>obj.applicationCode===index)[0].children;
+        };
+      }
+      state.menuListByApplicaion = menusList
     }
   },
   getters: {
@@ -60,12 +65,34 @@ const module = {
  * @param data
  * @returns {*}
  */
+/*function getRoutes(menus = [], routes = []) {
+  menus.forEach((currentValue,index) => {
+    let route = {
+      path: currentValue.menuUrl,
+      component: util.load("components/modules/Login", "Login"),
+      meta: {
+        applicationCode: currentValue.applicationCode
+      }
+    }
+    if(currentValue&& currentValue.children.length>0){
+    };
+
+    routes.push(route);
+    getRoutes(currentValue.children,routes);
+  return routes;
+}*/
+
+/**
+ * 只获取最下一级菜单 到路由中
+ * @param data
+ * @returns {*}
+ */
 function getRoutes(menus = [], routes = []) {
   menus.forEach((currentValue,index) => {
     if(currentValue&& currentValue.children.length<1){
       let route = {
         path: currentValue.menuUrl,
-        component: util.load("components/modules/Login","Login"),
+        component: util.load("components/modules","Test"),
         meta:{
           applicationCode:currentValue.applicationCode
         }
