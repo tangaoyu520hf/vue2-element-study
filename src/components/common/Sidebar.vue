@@ -1,10 +1,9 @@
 <template>
   <div class="sidebar" :style="{'width':'250px'}" id='admin-left'>
-    {{$route.matched[0].path}}
-    <el-row v-for="(item, index) in $store.state.user.menuListByApplicaion" class='tac' :key="index">
+    <el-row v-for="(item, index) in $store.getters.getSubMenus" v-if="$route.meta.applicationCode==item.applicationCode" class='tac' :key="index">
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened
-               >
-        <el-submenu v-if="item.children&&item.children.length>0" :index="item.menuCode">
+               router>
+        <el-submenu v-if="item.children&&item.children.length>0" :index="'/'+item.applicationCode+'/'+item.menuCode">
           <template slot="title">{{item.menuName}}</template>
           <el-menu-item v-for="(subitem, subindex) in item.children"
                         :index="'/'+item.applicationCode+'/'+item.menuCode+'/'+subitem.menuCode"
@@ -22,25 +21,26 @@
   import {mapGetters, mapMutations} from 'vuex'
   export default {
     created(){
-      this.initMenuList('/' + this.$route.meta.applicationCode);
+
     },
     methods: {
       ...mapMutations([
         'initMenuList',
       ]),
       updateCurMenu(route){
-        var route=route || this.$route;
+          var subMenus = this.$store.getters.getSubMenus;
+        var route = route || this.$route;
         if (route.matched.length) {
-          var rootPath=route.matched[0].path,
-            fullPath=route.path;
-          var routes=this.$router.options.routes;
+          var rootPath = route.matched[0].path,
+            fullPath = route.path;
+          var routes = this.$router.options.routes;
           for (var i = 0; i < routes.length; i++) {
-            if (routes[i].path===rootPath && !routes[i].hidden) {
-              this.menu_list=routes[i].children;
+            if (routes[i].path === rootPath && !routes[i].hidden) {
+              this.menu_list = routes[i].children;
               break;
             }
           }
-        }else{
+        } else {
           this.$router.push('/404');
         }
       }

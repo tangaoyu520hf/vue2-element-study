@@ -5,16 +5,13 @@
         <img src="../../../static/images/tangaoyu.png" class='logo' alt="">
       </el-col>
       <el-col :span="16">
-<!--        <el-menu :default-active="'/'+$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
+        <el-menu :default-active="'/'+$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
                  mode="horizontal" router>
-          <el-menu-item :index="'/welcome'" @click="initMenuList('/welcome')">首页</el-menu-item>
+          <el-menu-item :index="'/welcome'">首页</el-menu-item>
           <el-menu-item v-for="(item, index) in menus" :index="item.menuCode" :route="{path:item.menuCode}"
-                        @click="initMenuList(item.menuCode)" :key="index">{{item.menuName}}
+                        :key="index">{{item.menuName}}
           </el-menu-item>
-
-        </el-menu>-->
-        <button @click="pushUrl('/welcome')">welcome</button>
-        <button  @click="pushUrl('/admin')">admin</button>
+        </el-menu>
       </el-col>
       <el-col :span="4">
                 <span class='username'>
@@ -52,28 +49,10 @@
       }
     },
     methods: {
-      pushUrl(command) {
-        this.initMenuList(command)
-        this.$router.push(command);
-      },
-      ...mapMutations([
-        'initMenuList',
-      ]),
       logout(){
         this.$store.commit("logout", {})
-      },
-      defaultRoute(menuItem){
-        return getChild(menuItem);
       }
     }
-  }
-
-  function getChild(menuItem) {
-    let route = menuItem.menuUrl;
-    if(menuItem.children&&menuItem.children.length>0){
-      route = getChild(menuItem.children[0]);
-    }
-    return route;
   }
 
 </script>
