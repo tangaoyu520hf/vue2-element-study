@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" :style="{'width':'250px'}" id='admin-left'>
     {{$route.matched[0].path}}
-    <el-row v-for="(item, index) in menu_list" class='tac' :key="index">
+    <el-row v-for="(item, index) in $store.state.user.menuListByApplicaion" class='tac' :key="index">
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened
                >
         <el-submenu v-if="item.children&&item.children.length>0" :index="item.menuCode">
@@ -23,16 +23,6 @@
   export default {
     created(){
       this.initMenuList('/' + this.$route.meta.applicationCode);
-    },
-    data(){
-        return {
-          menu_list:[]
-        }
-    },
-    computed: {
-      ...mapGetters({
-        menus: "getSubMenus"
-      }),
     },
     methods: {
       ...mapMutations([
@@ -58,10 +48,6 @@
     watch: {
       $route(to, from){
         this.updateCurMenu(to);
-      },
-      menus(value){
-        this.menu_list = value;
-        console.log(value);
       }
     }
   }
