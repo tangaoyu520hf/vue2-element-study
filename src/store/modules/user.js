@@ -50,31 +50,8 @@ const module = {
     },
   },
 }
-
 /**
- * 只获取最下一级菜单 到路由中
- * @param data
- * @returns {*}
- */
-/*function getRoutes(menus = [], routes = []) {
-  menus.forEach((currentValue,index) => {
-    let route = {
-      path: currentValue.menuUrl,
-      component: util.load("components/modules/Login", "Login"),
-      meta: {
-        applicationCode: currentValue.applicationCode
-      }
-    }
-    if(currentValue&& currentValue.children.length>0){
-    };
-
-    routes.push(route);
-    getRoutes(currentValue.children,routes);
-  return routes;
-}*/
-
-/**
- * 只获取最下一级菜单 到路由中
+ * 获取路由菜单
  * @param data
  * @returns {*}
  */
