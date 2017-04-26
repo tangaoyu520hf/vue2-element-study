@@ -36,7 +36,7 @@ const module = {
     initMenuList(state,index){
       let menusList;
       if("/welcome"===index){
-        menusList = [{menuName:"欢迎页",menuCode:"/welcome",menuUrl:"/welcome"}]
+        menusList = [{menuName:"欢迎页",menuCode:"/welcome",menuUrl:"/welcome",applicationCode:""}]
       }else{
         if(state.userinfo.menuList&&index){
           menusList = state.userinfo.menuList.filter(obj =>obj.menuCode===index)[0].children;

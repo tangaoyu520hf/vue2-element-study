@@ -32,6 +32,7 @@ export default store => {
       ...[route],
       ...store.getters.getRoutes]
   const router = new Router({
+    mode: 'history',
     routes: routes/*[
       {
         path: '/login',
