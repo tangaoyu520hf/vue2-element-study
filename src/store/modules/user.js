@@ -3,8 +3,8 @@
  */
 import {
   localStorage
-} from '@/util/store/store.js'
-import util from "@/util"
+} from '@/core/store'
+import util from "@/core/util"
 const module = {
   state:{
     //登录成功后的用户信息
@@ -40,13 +40,15 @@ const module = {
       return menus
     },
     getSubMenus: (state,getters) => {
-      let menus = []
-      state.userinfo.menuList.forEach((obj,index) =>menus=[...menus,...obj.children])
-      menus.push({menuName:"欢迎页",menuCode:"/welcome",menuUrl:"/welcome",applicationCode:"welcome"})
-      return menus
+        let menus = []
+        if(state.userinfo.menuList){
+          state.userinfo.menuList.forEach((obj,index) =>menus=[...menus,...obj.children]);
+        }
+        menus.push({menuName:"欢迎页",menuCode:"/welcome",menuUrl:"/welcome",applicationCode:"welcome"})
+        return menus
     },
     getRoutes: (state,getters) => {
-      return getRoutes(getters.getTopMenus);
+        return getRoutes(getters.getTopMenus);
     },
   },
 }

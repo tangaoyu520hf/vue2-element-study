@@ -1,20 +1,31 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
-import routerFunction from './router'
+
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-import store from './store/index'
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+import App from './App'
+import routerFunction from './router'
+import store from './store/index'
+import plugins from './core/plugins'
+
+import i18n  from './core/i18n'
+Vue.config.productionTip = false
+
+//网络请求
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.use(VueAxios, axios)
 
-Vue.config.productionTip = false
+//e饿了么UI
 Vue.use(ElementUI)
+
+//加载自定义的 插件
+Vue.use(plugins)
 
 
 // 添加一个请求拦截器
@@ -45,6 +56,7 @@ new Vue({
   el: '#app',
   router:routerFunction(store),
   store,
+  i18n,
   template: '<App/>',
   components: { App }
 })

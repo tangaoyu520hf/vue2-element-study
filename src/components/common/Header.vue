@@ -8,7 +8,7 @@
         <el-menu :default-active="'/'+$route.meta.applicationCode" class="el-menu-vertical-demo" theme="dark" unique-opened
                  mode="horizontal" router>
           <el-menu-item :index="'/welcome'">首页</el-menu-item>
-          <el-menu-item v-for="(item, index) in menus" :index="item.menuCode" :route="{path:item.menuCode}"
+          <el-menu-item v-for="(item, index) in menus" :index="item.menuCode"
                         :key="index">{{item.menuName}}
           </el-menu-item>
         </el-menu>
@@ -31,26 +31,33 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                 </span>
-        <i class="fa fa-sign-out logout" @click='logout'>退出登录</i>
+        <el-button type="text" @click='logout'>退出登录</el-button>
       </el-col>
     </el-row>
   </header>
 </template>
 <script>
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters} from 'vuex'
   export default {
     computed: {
       ...mapGetters({
         menus: "getTopMenus"
       }),
       username(){
-        let username = this.$store.state.user.userinfo.name;
+        let username = this.$store.state.user.userinfo.updaterName;
         return username ? username : this.name;
       }
     },
     methods: {
       logout(){
-        this.$store.commit("logout", {})
+        this.$confirm('你确定退出登录么?', '确认退出', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$store.commit("logout", {});
+          this.$router.push("/login");
+        });
       }
     }
   }

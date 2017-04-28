@@ -1,27 +1,9 @@
 import Vue from "vue";
 import Router from "vue-router";
-import util from "../util";
+import util from "../core/util";
 Vue.use(Router)
 
 export default store => {
-  const route = {
-    path: '/',
-    component: util.load("components/common/Home"),
-    children: [{
-      hidden: true,
-      path: '',
-      redirect: to => {
-        return 'welcome'
-      },
-    }, {
-      path: '/welcome',
-      name: "welcome",
-      component: util.load("components/common/Welcome"),
-      meta: {
-        applicationCode: "welcome"
-      }
-    }]
-  };
   let routes = [
     {
       path: '/login',
@@ -29,74 +11,51 @@ export default store => {
       component: util.load("components/modules/Login/Login"),
       meta: {notRequire: true}
     },
-      ...[route],
-      ...store.getters.getRoutes]
+    {
+      path: '/',
+      component: util.load("components/common/Home"),
+      children: [{
+        hidden: true,
+        path: '',
+        redirect: to => {
+          return 'welcome'
+        },
+      }, {
+        path: '/welcome',
+        name: "welcome",
+        component: util.load("components/common/Welcome"),
+        meta: {
+          applicationCode: "welcome"
+        }
+      }]
+    }, ...store.getters.getRoutes]
   const router = new Router({
     mode: 'history',
-    routes: routes/*[
-      {
-        path: '/login',
-        name: "login",
-        component: util.load("components/modules/Login/Login"),
-        meta: {notRequire: true}
-      },
-      {
-        path: '/test',
-        name: "test",
-        component: util.load("components/common/Context"),
-        meta: {notRequire: true}
-      },*/
-      /*      {
-       path: '',
-       icon: 'inbox',
-       component: util.load("components/common/Home"),
-       children: [{
-       hidden: true,
-       path: '',
-       redirect: to => {
-       return 'appli'
-       }
-       },
-       {
-       path: '',
-       icon: 'inbox',
-       component: util.load("components/common/Context"),
-       children: [{
-       hidden: true,
-       path: '',
-       redirect: to => {
-       return 'appli2'
-       }
-       },{
-       path: '/appli2',
-       icon: 'inbox',
-       component: util.load("components/modules/Login/Login"),
-
-
-       }
-
-       ]
-       }
-       ]
-       }*/
-    /*]*/
+    routes: routes
   });
 
   router.beforeEach((to, from, next) => {
-    if (!to.matched.some(record => record.meta.notRequire)) {
-      // check if logged in
-      // if not, redirect to login page.
-      let userinfo = store.state.user.userinfo;
-      if (!userinfo) {
+    let token = store.state.user.userinfo.token;
+    //如果直接是公开的 则直接就 next
+    if(to.matched.some(record => record.meta.notRequire)){
+      next();
+    }else{
+      //用户没有登录 但是访问的页面又不是登录页面 则跳转到登录
+      if (!token && to.path !== '/login') {
         next({
           path: '/login',
-          query: {redirect: to.fullPath}
+          params: {redirect: to.path}
         })
-      } else {
-        next()
+      }else{
+        //如果已经登录 但是访问页面又是 登录 则直接跳转到 欢迎页
+        if ( to.path === '/login') {
+          next({
+            path: '/welcome'
+          });
+        } else {
+          next();
+        }
       }
-    } else {
-      next() // 确保一定要调用 next()
     }
   })
   return router;

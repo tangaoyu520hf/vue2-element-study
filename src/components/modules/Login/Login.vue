@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span='24'>
         <div class="content">
-          <el-form label-position="left" label-width="0px" class="demo-ruleForm card-box loginform"
+          <el-form v-authority:add label-position="left" label-width="0px" class="demo-ruleForm card-box loginform"
                    v-loading="login_actions.disabled"
                    element-loading-text="正在登录..."
                    :style="formOffset"
@@ -23,10 +23,10 @@
                         v-model='data.password'
                         @keyup.native.enter="login('data')"></el-input>
             </el-form-item>
-<!--            <el-checkbox style="margin:0px 0px 35px 0px;"
-                         :checked='remumber.remumber_flag'
-                         v-model='remumber.remumber_flag'>记住密码
-            </el-checkbox>-->
+            <!--            <el-checkbox style="margin:0px 0px 35px 0px;"
+                                     :checked='remumber.remumber_flag'
+                                     v-model='remumber.remumber_flag'>记住密码
+                        </el-checkbox>-->
             <el-form-item style="width:100%;">
               <el-button type="primary" @click='login("data")'>登录</el-button>
               <el-button @click='resetForm("data")'>重置</el-button>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex';
+  import {mapMutations} from 'vuex';
   export default {
     name: 'login',
     data() {
@@ -106,13 +106,20 @@
               let token = response.data.data;
               this.setToken(token)
               this.$http.get("security/user/info").then(response => {
-                let userInfo = response.data.data.user||{};
-                userInfo.menuList = response.data.data.menuList||[];
-                userInfo.roleFunctions = response.data.data.roleFunctionDTOS||{};
+                let userInfo = response.data.data.user || {};
+                userInfo.menuList = response.data.data.menuList || [];
+                userInfo.roleFunctions = response.data.data.roleFunctionDTOS || {};
                 this.setUserInfo(userInfo);
                 this.login_actions.disabled = false;
+                //动态添加路由
                 this.$router.addRoutes(this.$store.getters.getRoutes);
-                this.$router.push("/");
+                var redirect = this.$route.params.redirect;
+                if (redirect) {
+                  this.$router.push(redirect);
+                } else {
+                  this.$router.push("/");
+                }
+
               }).catch(responseFun);
             }).catch(responseFun);
           }
