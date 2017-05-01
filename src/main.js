@@ -23,6 +23,9 @@ Vue.use(VueAxios, axios)
 
 //e饿了么UI
 Vue.use(ElementUI)
+Vue.use(ElementUI, {
+  i18n: key => i18n.vm._t(key)
+})
 
 //加载自定义的 插件
 Vue.use(plugins)

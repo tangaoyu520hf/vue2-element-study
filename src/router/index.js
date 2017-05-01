@@ -25,7 +25,15 @@ export default store => {
         name: "welcome",
         component: util.load("components/common/Welcome"),
         meta: {
-          applicationCode: "welcome"
+          applicationCode: "welcome",
+        }
+      }, {
+        path: '/menu',
+        name: "menu",
+        component: util.load("components/modules/Menu/Menu"),
+        meta: {
+          applicationCode: "menu",
+          notRequire: true
         }
       }]
     }, ...store.getters.getRoutes]

@@ -12,7 +12,9 @@ const messages = {
     }
   },
   ch: {
-    message: zhLocale
+    message: {
+      hello: '你好！'
+    }
   }
 }
 //加载国际化
